@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "YOUR_DOCKERHUB_USERNAME/nginx-app"
+        IMAGE_NAME = "pratikshashete085/nginx-app"
         IMAGE_TAG  = "v1"
         NAMESPACE  = "nginxcc"
     }
