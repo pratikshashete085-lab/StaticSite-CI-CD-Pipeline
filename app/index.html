@@ -1,0 +1,25 @@
+cat > app/index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My CI/CD Site</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 { color: #58a6ff; }
+    p  { color: #8b949e; }
+  </style>
+</head>
+<body>
+  <h1>🚀 My CI/CD Pipeline is Working!</h1>
+  <p>Deployed using Docker → Jenkins → Kubernetes on AWS EC2</p>
+  <p>By: YOUR_NAME</p>
+</body>
+</html>
+EOF
