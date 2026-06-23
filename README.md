@@ -1,0 +1,1 @@
+# StaticSite-CI-CD-Pipeline
