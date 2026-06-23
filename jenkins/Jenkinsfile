@@ -1,0 +1,66 @@
+cat > jenkins/Jenkinsfile << 'EOF'
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "pratikshashete085/nginx-app"
+        IMAGE_TAG  = "v1"
+        NAMESPACE  = "nginxcc"
+    }
+
+    stages {
+
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+
+        stage('Login to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh "kubectl apply -f k8s/namespace.yml"
+                sh "kubectl apply -f k8s/deployment.yml"
+                sh "kubectl apply -f k8s/service.yml"
+                sh "kubectl apply -f k8s/ingress.yml"
+            }
+        }
+
+        stage('Update Deployment Image') {
+            steps {
+                sh """
+                kubectl set image deployment/nginx-app \
+                nginx-container=${IMAGE_NAME}:${IMAGE_TAG} \
+                -n ${NAMESPACE}
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed!'
+        }
+    }
+}
+EOF
