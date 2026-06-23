@@ -1,0 +1,6 @@
+cat > k8s/namespace.yml << 'EOF'
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginxcc
+EOF
